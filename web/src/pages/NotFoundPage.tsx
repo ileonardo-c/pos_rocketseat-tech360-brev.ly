@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function NotFoundPage() {
   return (
     <main className="status-page">
@@ -7,9 +9,9 @@ export function NotFoundPage() {
         <p className="status-text">
           O link que você está tentando acessar não existe, foi removido ou é uma URL inválida.
           Saiba mais em{" "}
-          <a href="/" className="status-link">
+          <Link to="/" className="status-link">
             brev.ly
-          </a>
+          </Link>
           .
         </p>
       </section>

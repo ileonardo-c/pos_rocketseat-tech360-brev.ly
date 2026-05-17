@@ -36,7 +36,7 @@ export function RedirectPage() {
           return;
         }
 
-        window.open(fullUrl, "_self");
+        window.location.assign(fullUrl);
       } catch {
         if (cancelled || activeRunRef.current !== runId) {
           return;

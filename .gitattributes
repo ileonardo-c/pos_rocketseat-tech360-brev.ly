@@ -1,1 +1,2 @@
-infra/pulumi/aws/pnpm-lock.yaml text eol=lf
+pnpm-lock.yaml text eol=lf
+server/drizzle/** text eol=lf

@@ -11,29 +11,29 @@ function getCreateErrorMessage(error: AppError | null): string | undefined {
 
   if (error.kind === "validation") {
     if (error.field === "originalUrl") {
-      return "Informe uma URL valida.";
+      return "Informe uma URL válida.";
     }
 
     if (error.field === "slug") {
-      return "Use apenas letras, numeros, _ e -.";
+      return "Use apenas letras, números, _ e -.";
     }
 
-    return "Nao foi possivel validar os dados enviados.";
+    return "Não foi possível validar os dados enviados.";
   }
 
   if (error.kind === "conflict" && error.field === "slug") {
-    return "Esse encurtamento ja existe.";
+    return "Esse encurtamento já existe.";
   }
 
   if (error.kind === "network") {
-    return "Sem conexao. Tente novamente.";
+    return "Sem conexão. Tente novamente.";
   }
 
   if (error.kind === "server") {
     return "Erro interno. Tente novamente.";
   }
 
-  return error.message || "Nao foi possivel criar o link.";
+  return error.message || "Não foi possível criar o link.";
 }
 
 function getExportErrorMessage(error: AppError | null): string | undefined {
@@ -42,14 +42,14 @@ function getExportErrorMessage(error: AppError | null): string | undefined {
   }
 
   if (error.kind === "network") {
-    return "Sem conexao. Tente novamente.";
+    return "Sem conexão. Tente novamente.";
   }
 
   if (error.kind === "server") {
-    return "Falha ao exportar relatorio.";
+    return "Falha ao exportar relatório.";
   }
 
-  return error.message || "Nao foi possivel gerar o relatorio CSV.";
+  return error.message || "Não foi possível gerar o relatório CSV.";
 }
 
 export function HomePage() {

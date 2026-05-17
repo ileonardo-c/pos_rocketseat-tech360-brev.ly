@@ -1,4 +1,4 @@
-﻿# Codex Review Policy
+# Codex Review Policy
 
 This repository is configured for automatic Codex review on pull requests.
 

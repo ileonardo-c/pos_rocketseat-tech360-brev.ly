@@ -22,7 +22,7 @@ interface LinksListProps {
 }
 
 function formatShortUrl(slug: string): string {
-  const shortBase = import.meta.env.VITE_SHORT_BASE_URL ?? "brev.ly";
+  const shortBase = (import.meta.env.VITE_SHORT_BASE_URL ?? "brev.ly").replace(/\/+$/g, "");
   return `${shortBase}/${slug}`;
 }
 
@@ -42,16 +42,23 @@ export function LinksList({
   onExport,
 }: LinksListProps) {
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const [copyErrorMessage, setCopyErrorMessage] = useState<string | null>(null);
   const showEmpty = useMemo(() => !isLoading && items.length === 0, [isLoading, items.length]);
 
   async function handleCopy(slug: string) {
-    const shortUrl = `${window.location.origin}/${slug}`;
-    await navigator.clipboard.writeText(shortUrl);
-    setCopiedSlug(slug);
+    try {
+      const shortUrl = formatShortUrl(slug);
+      await navigator.clipboard.writeText(shortUrl);
+      setCopyErrorMessage(null);
+      setCopiedSlug(slug);
 
-    window.setTimeout(() => {
-      setCopiedSlug((current) => (current === slug ? null : current));
-    }, 1500);
+      window.setTimeout(() => {
+        setCopiedSlug((current) => (current === slug ? null : current));
+      }, 1500);
+    } catch {
+      setCopiedSlug(null);
+      setCopyErrorMessage("Não foi possível copiar o link. Tente novamente.");
+    }
   }
 
   return (
@@ -74,6 +81,7 @@ export function LinksList({
       </header>
 
       {exportErrorMessage && <p className="form-error links-export-error">{exportErrorMessage}</p>}
+      {copyErrorMessage && <p className="form-error links-export-error">{copyErrorMessage}</p>}
 
       <div className="links-content">
         {isLoading && (

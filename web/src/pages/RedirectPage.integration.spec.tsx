@@ -22,7 +22,6 @@ vi.mock("@/lib/http", async () => {
 describe("RedirectPage integration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(window, "open").mockImplementation(() => null);
   });
 
   afterEach(() => {
@@ -61,7 +60,10 @@ describe("RedirectPage integration", () => {
     });
 
     await waitFor(() => {
-      expect(window.open).toHaveBeenCalledWith("https://example.com/target", "_self");
+      expect(screen.getByRole("link", { name: "Acesse aqui" })).toHaveAttribute(
+        "href",
+        "https://example.com/target",
+      );
     });
   });
 
