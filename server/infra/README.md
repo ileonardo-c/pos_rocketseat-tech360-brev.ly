@@ -5,6 +5,9 @@ Infraestrutura para provisionar projeto Supabase com Pulumi.
 ## Pré-requisitos
 
 - Pulumi CLI instalado.
+- Backend Pulumi autenticado:
+  - Pulumi Cloud: `PULUMI_ACCESS_TOKEN` em ambiente, ou
+  - Local backend: `pulumi login --local` + `PULUMI_CONFIG_PASSPHRASE`.
 - Token da API Supabase configurado em ambiente (`SUPABASE_ACCESS_TOKEN`).
 - Organização Supabase disponível.
 
