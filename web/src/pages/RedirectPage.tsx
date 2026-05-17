@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useIncrementAccessMutation, useResolveLinkMutation } from "../features/links/hooks";
 
@@ -8,8 +8,15 @@ export function RedirectPage() {
   const resolveMutation = useResolveLinkMutation();
   const incrementMutation = useIncrementAccessMutation();
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
+  const startedRef = useRef(false);
 
   useEffect(() => {
+    if (startedRef.current) {
+      return;
+    }
+
+    startedRef.current = true;
+
     if (typeof slug !== "string" || slug.length === 0) {
       navigate("/not-found", { replace: true });
       return;
