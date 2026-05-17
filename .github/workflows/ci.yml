@@ -7,78 +7,74 @@ on:
     branches: [main]
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: lint
+  server:
+    name: server
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.1.2 --activate
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install
         run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm --filter server run typecheck
 
       - name: Lint
-        run: pnpm run lint
-
-  test:
-    name: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.1.2 --activate
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
+        run: pnpm --filter server run lint
 
       - name: Test
-        run: pnpm run test
+        run: pnpm --filter server run test
 
-  build:
-    name: build
+      - name: Build
+        run: pnpm --filter server run build
+
+  web:
+    name: web
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.1.2 --activate
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Typecheck
+        run: pnpm --filter web run typecheck
+
+      - name: Lint
+        run: pnpm --filter web run lint
+
+      - name: Test
+        run: pnpm --filter web run test
+
       - name: Build
-        run: pnpm run build
+        run: pnpm --filter web run build
