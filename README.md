@@ -115,6 +115,11 @@ pnpm run build
 - API: [server/README.md](server/README.md)
 - Frontend: [web/README.md](web/README.md)
 
+## Referências do desafio
+
+- Figma: [1477335071553579816](https://www.figma.com/community/file/1477335071553579816)
+- YouTube: [asZn42mUOmw](https://www.youtube.com/watch?v=asZn42mUOmw)
+
 ## Licença
 
 MIT. Veja [LICENSE](LICENSE).
