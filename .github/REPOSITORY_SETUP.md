@@ -40,6 +40,8 @@ Configure in GitHub settings:
 - Required checks:
   - `server`
   - `web`
+- Observability check (informativo neste ciclo):
+  - `infra`
 - Dismiss stale approvals on new commits (recommended)
 - Restrict force pushes and deletion on `main`
 
@@ -61,6 +63,6 @@ Recommended rollout:
 
 Create branch `chore/repo-governance-smoke` with a tiny doc change and open PR to validate:
 
-- CI runs (`server`, `web`)
+- CI runs (`server`, `web`) + observability (`infra`)
 - CODEOWNERS requested reviewer
 - Codex review appears automatically

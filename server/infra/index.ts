@@ -29,7 +29,12 @@ const apiKeys = supabase.getApikeysOutput({
 
 export const supabaseProjectRef = project.id;
 export const supabaseRegion = region;
-export const supabaseDbPooler = pooler.connectionString;
+export const supabaseDbPoolerUrls = pulumi.secret(pooler.url);
+export const supabaseDbPooler = pulumi.secret(
+  pooler.url.apply(
+    (urls) => urls.transaction ?? urls.session ?? urls.pooler ?? Object.values(urls)[0] ?? "",
+  ),
+);
 export const supabaseAnonKey = pulumi.secret(apiKeys.anonKey);
 export const supabaseServiceRoleKey = pulumi.secret(apiKeys.serviceRoleKey);
 export const supabaseUrl = pulumi.interpolate`https://${project.id}.supabase.co`;

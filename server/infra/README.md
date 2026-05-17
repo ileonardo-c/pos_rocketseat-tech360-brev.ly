@@ -23,19 +23,25 @@ Infraestrutura para provisionar projeto Supabase com Pulumi.
 pnpm run prepare:supabase-sdk
 ```
 
-2. Instalar dependências:
+2. Instalar dependências do pacote `server/infra`:
 
 ```bash
-pnpm install
+pnpm install --ignore-workspace
 ```
 
-3. Inicializar stack:
+3. Garantir instalação de pacotes/plugins Pulumi locais:
+
+```bash
+pulumi install
+```
+
+4. Inicializar stack:
 
 ```bash
 pulumi stack init dev
 ```
 
-4. Configurar parâmetros:
+5. Configurar parâmetros:
 
 ```bash
 pulumi config set organizationId <org-id>
@@ -44,13 +50,13 @@ pulumi config set region us-east-1
 pulumi config set --secret databasePassword <strong-password>
 ```
 
-5. Validar plano:
+6. Validar plano:
 
 ```bash
 pulumi preview
 ```
 
-6. Provisionar:
+7. Provisionar:
 
 ```bash
 pulumi up

@@ -78,3 +78,35 @@ jobs:
 
       - name: Build
         run: pnpm --filter web run build
+
+  infra:
+    name: infra
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install Pulumi CLI
+        uses: pulumi/actions@v6
+
+      - name: Install infra dependencies
+        run: pnpm --dir server/infra install --ignore-workspace
+
+      - name: Generate Supabase Pulumi SDK
+        run: pnpm --dir server/infra run prepare:supabase-sdk
+
+      - name: Build infra
+        run: pnpm --dir server/infra run build
