@@ -114,3 +114,7 @@ pnpm run build
 
 - API: [server/README.md](server/README.md)
 - Frontend: [web/README.md](web/README.md)
+
+## Licença
+
+MIT. Veja [LICENSE](LICENSE).

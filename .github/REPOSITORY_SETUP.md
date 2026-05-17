@@ -40,50 +40,51 @@ Configure in GitHub settings:
 - Required checks:
   - `server`
   - `web`
-- Observability check (informativo neste ciclo):
-  - `infra`
 - Solo maintainer mode (recommended while only one human reviewer exists):
   - `required_approving_review_count=0`
   - `require_code_owner_reviews=true`
 - Dismiss stale approvals on new commits (recommended)
 - Restrict force pushes and deletion on `main`
 
-### CLI reference (gh + JSON payload)
+### Replicable policy (versioned + script)
 
-Use JSON input to avoid boolean/integer parsing issues in PowerShell:
+- Policy file (versioned in repository):
+  - `.github/policies/branch-protection-main.json`
+- Script (PowerShell):
+  - `.github/scripts/apply-branch-protection.ps1`
+- Script (Bash):
+  - `.github/scripts/apply-branch-protection.sh`
+
+PowerShell:
 
 ```powershell
 $owner = "ileonardo-c"
 $repo = "pos_rocketseat-tech360-brev.ly"
-New-Item -ItemType Directory -Force .local | Out-Null
 
-@'
-{
-  "required_status_checks": {
-    "strict": true,
-    "contexts": ["server", "web"]
-  },
-  "enforce_admins": true,
-  "required_pull_request_reviews": {
-    "dismiss_stale_reviews": true,
-    "require_code_owner_reviews": true,
-    "required_approving_review_count": 0
-  },
-  "required_conversation_resolution": true,
-  "allow_force_pushes": false,
-  "allow_deletions": false,
-  "block_creations": false,
-  "required_linear_history": false,
-  "restrictions": null
-}
-'@ | Set-Content -Encoding ascii .local/branch-protection-main.json
-
-gh api `
-  -X PUT `
-  repos/$owner/$repo/branches/main/protection `
-  -H "Accept: application/vnd.github+json" `
-  --input .local/branch-protection-main.json
+.\.github\scripts\apply-branch-protection.ps1 -Owner $owner -Repo $repo -Branch "main"
 ```
+
+Bash:
+
+```bash
+bash .github/scripts/apply-branch-protection.sh ileonardo-c pos_rocketseat-tech360-brev.ly main
+```
+
+### Validation checklist (post-apply)
+
+Confirm with:
+
+```bash
+gh api repos/<owner>/<repo>/branches/main/protection --jq "{required_checks: .required_status_checks.contexts, strict: .required_status_checks.strict, approvals: .required_pull_request_reviews.required_approving_review_count, codeowners: .required_pull_request_reviews.require_code_owner_reviews, conversation_resolution: .required_conversation_resolution.enabled}"
+```
+
+Expected:
+
+- `required_checks`: `["server","web"]`
+- `strict`: `true`
+- `approvals`: `0` (solo maintainer mode)
+- `codeowners`: `true`
+- `conversation_resolution`: `true`
 
 ## 4. Codex Auto Review
 
@@ -104,6 +105,6 @@ Recommended rollout:
 
 Create branch `chore/repo-governance-smoke` with a tiny doc change and open PR to validate:
 
-- CI runs (`server`, `web`) + observability (`infra`)
+- CI runs (`server`, `web`)
 - CODEOWNERS requested reviewer
 - Codex review appears automatically
