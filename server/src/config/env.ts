@@ -11,6 +11,7 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url().default("https://example.supabase.co"),
   SUPABASE_SERVICE_ROLE_KEY: z.string().default("service-role-key"),
   SUPABASE_STORAGE_BUCKET: z.string().default("reports"),
+  FILE_STORAGE_DRIVER: z.enum(["supabase", "memory"]).default("supabase"),
   REPORT_SIGNED_URL_EXPIRES_IN_SECONDS: z.coerce.number().default(3600),
 });
 

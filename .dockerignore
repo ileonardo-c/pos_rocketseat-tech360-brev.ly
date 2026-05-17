@@ -1,0 +1,17 @@
+.git
+.github
+.agents
+.claude
+.qwen
+.codex
+node_modules
+**/node_modules
+dist
+coverage
+playwright-report
+test-results
+.env
+.env.*
+server/infra/.pulumi
+server/infra/bin
+*.log

@@ -35,6 +35,13 @@ describe("http routes", () => {
   });
 
   it("handles full link workflow", async () => {
+    const health = await app.inject({
+      method: "GET",
+      url: "/health",
+    });
+    expect(health.statusCode).toBe(200);
+    expect(health.json()).toEqual({ status: "ok" });
+
     const created = await app.inject({
       method: "POST",
       url: "/urls",
