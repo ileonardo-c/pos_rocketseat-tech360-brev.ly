@@ -63,6 +63,8 @@ pnpm run e2e
 - `CODEOWNERS` ativo.
 - Template de PR com checklist obrigatório do desafio.
 - Política de review do Codex em `AGENTS.md`.
+- Modo solo atual: `required_approving_review_count=0` com `require_code_owner_reviews=true`.
+- Review automático (Copilot/Codex) é sinal técnico de qualidade e não substitui aprovação humana formal.
 
 ## Supabase + Pulumi
 
