@@ -17,3 +17,5 @@ server/infra/node_modules/
 server/infra/.pulumi/
 server/infra/bin/
 skills-lock.json
+playwright-report/
+test-results/

@@ -6,11 +6,15 @@ import { makeListLinksUseCase } from "../../application/use-cases/make-list-link
 import { makeResolveLinkUseCase } from "../../application/use-cases/make-resolve-link-use-case.js";
 import { env } from "../../config/env.js";
 import { DrizzleLinkRepository } from "../repositories/drizzle-link-repository.js";
+import { InMemoryStorageRepository } from "../storage/in-memory-storage-repository.js";
 import { SupabaseStorageRepository } from "../storage/supabase-storage-repository.js";
 
 export function buildDefaultUseCases() {
   const linkRepository = new DrizzleLinkRepository();
-  const storageRepository = new SupabaseStorageRepository();
+  const storageRepository =
+    env.FILE_STORAGE_DRIVER === "memory"
+      ? new InMemoryStorageRepository()
+      : new SupabaseStorageRepository();
 
   return {
     createLinkUseCase: makeCreateLinkUseCase({ linkRepository }),

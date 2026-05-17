@@ -9,16 +9,40 @@ API de encurtamento de links com TypeScript, Fastify, Drizzle e Postgres (Supaba
 - `src/application/repositories`: contratos (Repository Pattern).
 - `src/infra`: banco, storage, HTTP e implementações concretas.
 
-## Executar local
+## Endpoints
 
-1. Copiar `.env.example` para `.env` e preencher valores.
+- `GET /health`
+- `POST /urls`
+- `DELETE /urls/:shortUrl`
+- `GET /urls/:shortUrl`
+- `GET /urls`
+- `POST /urls/:shortUrl/increment`
+- `GET /urls/report`
+
+## Variáveis de ambiente
+
+Runtime da API (`server/.env`):
+
+- `NODE_ENV`
+- `PORT`
+- `CORS_ORIGIN`
+- `DATABASE_URL`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_STORAGE_BUCKET`
+- `FILE_STORAGE_DRIVER` (`supabase` ou `memory`)
+- `REPORT_SIGNED_URL_EXPIRES_IN_SECONDS`
+
+## Execução local
+
+1. Copiar `.env.example` para `.env`.
 2. Instalar dependências:
 
 ```bash
 pnpm install
 ```
 
-3. Rodar migrations:
+3. Aplicar migrations:
 
 ```bash
 pnpm db:migrate
@@ -30,40 +54,13 @@ pnpm db:migrate
 pnpm dev
 ```
 
-## Endpoints
-
-- `POST /urls`
-- `DELETE /urls/:shortUrl`
-- `GET /urls/:shortUrl`
-- `GET /urls`
-- `POST /urls/:shortUrl/increment`
-- `GET /urls/report`
-
 ## Pulumi + Supabase
 
 A infraestrutura está em `server/infra`.
 
 Fluxo:
 
-1. Em `server/infra`, executar `pnpm run prepare:supabase-sdk` (gera `@pulumi/supabase`).
-2. Configurar secrets/config do stack Pulumi.
-3. `pulumi preview` para validar.
-4. `pulumi up` para provisionar projeto e settings.
-5. Usar outputs para preencher `.env` e rodar migrations.
-
-## Variáveis de Ambiente
-
-Runtime da API (`server/.env`):
-
-- `DATABASE_URL`
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `SUPABASE_STORAGE_BUCKET`
-- `REPORT_SIGNED_URL_EXPIRES_IN_SECONDS`
-
-Provisionamento (`server/infra` via Pulumi config/secrets):
-
-- `organizationId`
-- `projectName`
-- `region`
-- `databasePassword` (secret)
+1. Provisionar projeto/outputs com Pulumi.
+2. Popular `.env` do runtime com outputs necessários.
+3. Executar migrations.
+4. Validar fluxos HTTP e export CSV.

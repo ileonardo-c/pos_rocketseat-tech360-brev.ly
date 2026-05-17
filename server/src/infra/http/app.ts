@@ -25,6 +25,10 @@ export async function createApp(useCases: AppUseCases = buildDefaultUseCases()):
     return reply.status(500).send({ message: "Unexpected error" });
   });
 
+  app.get("/health", async (_, reply) => {
+    return reply.status(200).send({ status: "ok" });
+  });
+
   await registerCreateLinkRoute(app, useCases);
   await registerDeleteLinkRoute(app, useCases);
   await registerResolveLinkRoute(app, useCases);

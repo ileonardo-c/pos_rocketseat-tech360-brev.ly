@@ -38,9 +38,10 @@ Configure in GitHub settings:
 - Require a pull request before merging
 - Require status checks to pass before merging
 - Required checks:
-  - `lint`
-  - `test`
-  - `build`
+  - `server`
+  - `web`
+- Observability check (informativo neste ciclo):
+  - `infra`
 - Dismiss stale approvals on new commits (recommended)
 - Restrict force pushes and deletion on `main`
 
@@ -62,6 +63,6 @@ Recommended rollout:
 
 Create branch `chore/repo-governance-smoke` with a tiny doc change and open PR to validate:
 
-- CI runs (`lint`, `test`, `build`)
+- CI runs (`server`, `web`) + observability (`infra`)
 - CODEOWNERS requested reviewer
 - Codex review appears automatically

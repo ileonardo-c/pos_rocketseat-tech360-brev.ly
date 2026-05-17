@@ -10,22 +10,27 @@ SPA React + Vite para gerenciamento de links encurtados.
 ## Configuração
 
 1. Copie `.env.example` para `.env`.
-2. Ajuste `VITE_API_BASE_URL` para a URL da API.
+2. Ajuste:
+   - `VITE_API_BASE_URL`
+   - `VITE_SHORT_BASE_URL`
 
-## Rodar local
+## Desenvolvimento local
 
 ```bash
 pnpm dev
 ```
 
-## Build
+## Build e testes
 
 ```bash
-pnpm build
+pnpm run typecheck
+pnpm run lint
+pnpm run test
+pnpm run build
 ```
 
-## Testes
+## Rotas
 
-```bash
-pnpm test
-```
+- `/`: cadastro, listagem, exclusão e export CSV.
+- `/:slug`: resolve URL, incrementa acesso e redireciona.
+- fallback: not-found.

@@ -15,6 +15,25 @@ function mapRowToLink(row: typeof schema.links.$inferSelect): Link {
   };
 }
 
+function normalizeReportDate(value: Date | string): Date {
+  if (value instanceof Date) {
+    return value;
+  }
+
+  const direct = new Date(value);
+  if (!Number.isNaN(direct.getTime())) {
+    return direct;
+  }
+
+  const normalized = value.replace(" ", "T").replace(/\+00$/, "Z");
+  const fallback = new Date(normalized);
+  if (!Number.isNaN(fallback.getTime())) {
+    return fallback;
+  }
+
+  throw new Error(`Invalid created_at value in report stream: ${value}`);
+}
+
 export class DrizzleLinkRepository implements LinkRepository, LinkReportRepository {
   async create(input: CreateLinkInput): Promise<Link> {
     const [created] = await db
@@ -77,20 +96,22 @@ export class DrizzleLinkRepository implements LinkRepository, LinkReportReposito
 
     const cursor = sql.unsafe(rawSql, params as never[]).cursor(100);
 
-    for await (const chunk of cursor as AsyncIterable<
-      Array<{
-        originalUrl: string;
-        shortUrl: string;
-        accessCount: number;
-        createdAt: Date | string;
-      }>
-    >) {
+    for await (const chunk of cursor as AsyncIterable<Array<Record<string, unknown>>>) {
       for (const row of chunk) {
+        const originalUrl = (row.originalUrl ?? row.original_url) as string | undefined;
+        const shortUrl = (row.shortUrl ?? row.slug) as string | undefined;
+        const accessCount = (row.accessCount ?? row.access_count) as number | undefined;
+        const createdAtRaw = (row.createdAt ?? row.created_at) as Date | string | undefined;
+
+        if (!originalUrl || !shortUrl || accessCount === undefined || !createdAtRaw) {
+          throw new Error("Invalid row shape returned while streaming CSV report");
+        }
+
         yield {
-          originalUrl: row.originalUrl,
-          shortUrl: row.shortUrl,
-          accessCount: row.accessCount,
-          createdAt: row.createdAt instanceof Date ? row.createdAt : new Date(row.createdAt),
+          originalUrl,
+          shortUrl,
+          accessCount,
+          createdAt: normalizeReportDate(createdAtRaw),
         };
       }
     }
