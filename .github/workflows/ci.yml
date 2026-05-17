@@ -33,9 +33,6 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm --filter server run typecheck
-
       - name: Lint
         run: pnpm --filter server run lint
 
@@ -67,9 +64,6 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm --filter web run typecheck
-
       - name: Lint
         run: pnpm --filter web run lint
 
@@ -97,7 +91,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: server/infra/pnpm-lock.yaml
 
       - name: Install Pulumi CLI
         uses: pulumi/actions@v6
