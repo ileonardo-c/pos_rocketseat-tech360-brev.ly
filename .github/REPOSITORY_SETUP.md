@@ -55,6 +55,7 @@ Use JSON input to avoid boolean/integer parsing issues in PowerShell:
 ```powershell
 $owner = "ileonardo-c"
 $repo = "pos_rocketseat-tech360-brev.ly"
+New-Item -ItemType Directory -Force .local | Out-Null
 
 @'
 {
@@ -75,13 +76,13 @@ $repo = "pos_rocketseat-tech360-brev.ly"
   "required_linear_history": false,
   "restrictions": null
 }
-'@ | Set-Content -Encoding ascii .github/branch-protection-main.json
+'@ | Set-Content -Encoding ascii .local/branch-protection-main.json
 
 gh api `
   -X PUT `
   repos/$owner/$repo/branches/main/protection `
   -H "Accept: application/vnd.github+json" `
-  --input .github/branch-protection-main.json
+  --input .local/branch-protection-main.json
 ```
 
 ## 4. Codex Auto Review

@@ -11,6 +11,7 @@ dist/
 .claude/
 .qwen/
 .codex/
+.local/
 *.tmp
 *.local
 server/infra/node_modules/
