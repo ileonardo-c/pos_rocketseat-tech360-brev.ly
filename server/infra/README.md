@@ -26,7 +26,7 @@ pnpm run prepare:supabase-sdk
 2. Instalar dependências do pacote `server/infra`:
 
 ```bash
-pnpm install --ignore-workspace
+pnpm install
 ```
 
 3. Garantir instalação de pacotes/plugins Pulumi locais:

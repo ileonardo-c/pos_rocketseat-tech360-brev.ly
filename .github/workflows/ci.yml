@@ -103,7 +103,7 @@ jobs:
         uses: pulumi/actions@v6
 
       - name: Install infra dependencies
-        run: pnpm --dir server/infra install --ignore-workspace
+        run: pnpm --dir server/infra install
 
       - name: Generate Supabase Pulumi SDK
         run: pnpm --dir server/infra run prepare:supabase-sdk
