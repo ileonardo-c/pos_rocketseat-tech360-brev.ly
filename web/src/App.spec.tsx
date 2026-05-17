@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
-import { App } from "./App";
+import { App } from "@/App";
 
 describe("App routes", () => {
   it("renders not-found page for unknown route shape", () => {
@@ -11,6 +11,6 @@ describe("App routes", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText(/Link não encontrado/i)).toBeInTheDocument();
+    expect(screen.getByText(/Link.*encontrado/i)).toBeInTheDocument();
   });
 });

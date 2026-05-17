@@ -1,2 +1,2 @@
-server/infra/sdks/supabase/** text eol=lf
-server/infra/pnpm-lock.yaml text eol=lf
+pnpm-lock.yaml text eol=lf
+server/drizzle/** text eol=lf

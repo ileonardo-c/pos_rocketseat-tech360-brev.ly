@@ -14,7 +14,10 @@
     "declaration": false,
     "sourceMap": true,
     "types": ["node", "vitest/globals"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "#app/*": ["src/*"]
+    }
   },
   "include": ["src/**/*.ts", "drizzle.config.ts", "vitest.config.ts"],
   "exclude": ["dist", "node_modules"]

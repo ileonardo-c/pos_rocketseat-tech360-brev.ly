@@ -1,23 +1,24 @@
 # Contributing
 
-## Branch Naming
+## Branch naming
 
 - `feature/<short-description>`
 - `fix/<short-description>`
 - `chore/<short-description>`
 
-## Local Quality Gate
+## Local quality gate
 
-Run before opening a PR:
+Execute antes de abrir PR:
 
 ```bash
 pnpm run lint
+pnpm run typecheck
 pnpm run test
 pnpm run build
 ```
 
-## Pull Request
+## Pull request
 
-- Keep PRs focused and small.
-- Use the PR template checklist.
-- If touching `server/infra`, update docs and config instructions.
+- PR pequeno e focado.
+- Preencher checklist do template.
+- Se alterar contrato API/Web, atualizar testes e documentação.

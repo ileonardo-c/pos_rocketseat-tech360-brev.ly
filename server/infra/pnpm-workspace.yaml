@@ -1,3 +1,0 @@
-allowBuilds:
-  '@pulumi/supabase': true
-  protobufjs: true

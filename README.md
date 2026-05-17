@@ -1,71 +1,116 @@
 # Brevly Monorepo
 
-Projeto fullstack para encurtamento de links com foco em simplicidade, organização e entrega orientada ao desafio.
+Projeto fullstack de encurtamento de links com foco no desafio técnico.
+
+## O que precisa para rodar
+
+- Node.js `22.x`
+- pnpm `11.x`
+- Docker Desktop em execução
+- Portas livres: `3333`, `5173`, `9000`, `9001`
 
 ## Estrutura
 
-- `server`: API Fastify + Drizzle + Postgres + Supabase Storage + Pulumi.
-- `web`: SPA React + Vite.
-- `.github`: CI, template de PR e automações de governança.
+- `server`: API Fastify + Drizzle + Postgres + S3 compatível (MinIO local)
+- `web`: SPA React + Vite
+- `.github`: CI e governança
 
-## Setup
+## Setup inicial
 
 ```bash
 pnpm run init
 ```
 
-## Desenvolvimento local
+## Fluxo recomendado (Docker + Playwright no host)
 
-```bash
-pnpm dev
-```
-
-## Qualidade
-
-```bash
-pnpm run typecheck
-pnpm run lint
-pnpm run test
-pnpm run build
-```
-
-## Docker full-stack (local)
+1. Subir stack local (deixe o terminal aberto):
 
 ```bash
 pnpm run dev:docker
 ```
 
-Serviços esperados:
+2. Em um novo terminal, validar API:
 
-- API: `http://localhost:3333`
-- Health API: `http://localhost:3333/health`
-- Web: `http://localhost:5173`
-- Postgres: `localhost:5432`
+```bash
+curl http://localhost:3333/health
+```
 
-Parar stack:
+Resposta esperada: `200` com `{"status":"ok"}`.
+
+3. Instalar navegador do Playwright (uma vez por máquina):
+
+```bash
+pnpm run e2e:install
+```
+
+4. Rodar smoke E2E:
+
+```bash
+pnpm run e2e
+```
+
+5. Rodar prova visual (smoke + screenshots):
+
+```bash
+pnpm run e2e:proof
+```
+
+6. Validar artefatos:
+
+- `web/playwright-report`
+- `web/test-results/evidence`
+- `web/test-results`
+
+7. Encerrar stack local:
 
 ```bash
 pnpm run down:docker
 ```
 
-## Smoke E2E (Playwright)
+## Fluxo alternativo (sem Docker)
 
-Pré-requisito: stack local ativa.
+Use apenas se quiser subir os processos manualmente.
+
+1. Configurar envs:
 
 ```bash
-pnpm run e2e:install
-pnpm run e2e
+cp server/.env.example server/.env
+cp web/.env.example web/.env
 ```
 
-## Governança de repositório
+2. Subir dependências locais (Postgres + MinIO) fora do projeto.
 
-- CI obrigatório com checks estáveis: `server`, `web`.
-- `CODEOWNERS` ativo.
-- Template de PR com checklist obrigatório do desafio.
-- Política de review do Codex em `AGENTS.md`.
-- Modo solo atual: `required_approving_review_count=0` com `require_code_owner_reviews=true`.
-- Review automático (Copilot/Codex) é sinal técnico de qualidade e não substitui aprovação humana formal.
+3. Aplicar migration e subir apps:
 
-## Supabase + Pulumi
+```bash
+pnpm --dir server run db:migrate
+pnpm --dir server run dev
+pnpm --dir web run dev
+```
 
-Fluxo operacional em `server/infra/README.md`.
+4. Rodar E2E:
+
+```bash
+pnpm run e2e
+pnpm run e2e:proof
+```
+
+## Diferença entre comandos E2E
+
+- `pnpm run e2e`: smoke funcional principal.
+- `pnpm run e2e:proof`: smoke funcional + capturas de evidência.
+- `pnpm --filter web run e2e:visual`: comparação visual com baseline do Figma.
+
+## Qualidade do projeto
+
+```bash
+pnpm run lint
+pnpm run typecheck
+pnpm run test
+pnpm run build
+```
+
+## Documentação por pacote
+
+- API: [server/README.md](server/README.md)
+- Frontend: [web/README.md](web/README.md)

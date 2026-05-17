@@ -10,8 +10,8 @@ dist
 coverage
 playwright-report
 test-results
+web/playwright-report
+web/test-results
 .env
 .env.*
-server/infra/.pulumi
-server/infra/bin
 *.log
