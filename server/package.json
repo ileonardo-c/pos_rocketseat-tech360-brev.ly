@@ -8,7 +8,7 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/infra/http/server.js",
     "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit",
+    "lint": "echo \"lint not configured\"",
     "format": "echo \"format not configured\"",
     "test": "vitest run",
     "test:watch": "vitest",
