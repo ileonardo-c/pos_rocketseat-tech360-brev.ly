@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useIncrementAccessMutation, useResolveLinkMutation } from "../features/links/hooks";
+import { incrementAccess, resolveLink } from "../features/links/api";
 
 export function RedirectPage() {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
-  const resolveMutation = useResolveLinkMutation();
-  const incrementMutation = useIncrementAccessMutation();
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
-  const startedForSlugRef = useRef<string | null>(null);
+  const activeRunRef = useRef<symbol | null>(null);
 
   useEffect(() => {
     if (typeof slug !== "string" || slug.length === 0) {
@@ -16,33 +14,29 @@ export function RedirectPage() {
       return;
     }
 
-    if (startedForSlugRef.current === slug) {
-      return;
-    }
-
-    startedForSlugRef.current = slug;
-
     let cancelled = false;
     const slugValue: string = slug;
+    const runId = Symbol(slugValue);
+    activeRunRef.current = runId;
 
     async function run() {
       try {
-        const { fullUrl } = await resolveMutation.mutateAsync(slugValue);
+        const { fullUrl } = await resolveLink(slugValue);
 
-        if (cancelled) {
+        if (cancelled || activeRunRef.current !== runId) {
           return;
         }
 
         setTargetUrl(fullUrl);
-        await incrementMutation.mutateAsync(slugValue);
+        await incrementAccess(slugValue);
 
-        if (cancelled) {
+        if (cancelled || activeRunRef.current !== runId) {
           return;
         }
 
         window.location.href = fullUrl;
       } catch {
-        if (cancelled) {
+        if (cancelled || activeRunRef.current !== runId) {
           return;
         }
 
@@ -54,8 +48,12 @@ export function RedirectPage() {
 
     return () => {
       cancelled = true;
+
+      if (activeRunRef.current === runId) {
+        activeRunRef.current = null;
+      }
     };
-  }, [incrementMutation, navigate, resolveMutation, slug]);
+  }, [navigate, slug]);
 
   return (
     <main className="status-page">

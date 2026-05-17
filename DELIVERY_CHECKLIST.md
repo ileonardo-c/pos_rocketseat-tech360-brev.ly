@@ -43,8 +43,10 @@
 
 ## Evidências de validação (publicação por etapas)
 
-- [ ] Gate CI remoto aprovado (`server`, `web`).
-- [ ] Gate local Docker aprovado (`postgres`, `server`, `web` saudáveis).
-- [ ] `GET /health` retornando `200`.
-- [ ] Gate Playwright smoke aprovado.
-- [ ] Gate Supabase/Pulumi aprovado (projeto, outputs, migrations, CSV assinado).
+- [x] Gate CI remoto aprovado (`server`, `web`).
+- [x] Gate local Docker aprovado (`postgres`, `server`, `web` saudáveis).
+- [x] `GET /health` retornando `200`.
+- [x] Gate Playwright smoke aprovado.
+- [x] Gate Supabase/Pulumi aprovado (projeto, outputs, migrations, CSV assinado).
+
+Validação Pulumi registrada em `2026-05-17` com stack de adoção (`codex-validate`) apontando para `existingProjectRef=pvbrmtzoyaugpwnqiajn`, outputs esperados e `pulumi up` idempotente no projeto existente.
