@@ -2,5 +2,6 @@ config:
   brevly-supabase:organizationId: your-org-id
   brevly-supabase:projectName: brevly
   brevly-supabase:region: us-east-1
+  brevly-supabase:existingProjectRef: your-project-ref
   brevly-supabase:databasePassword:
     secure: CHANGEME

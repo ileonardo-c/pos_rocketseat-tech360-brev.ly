@@ -5,9 +5,8 @@ Infraestrutura para provisionar projeto Supabase com Pulumi.
 ## Pré-requisitos
 
 - Pulumi CLI instalado.
-- Backend Pulumi autenticado:
-  - Pulumi Cloud: `PULUMI_ACCESS_TOKEN` em ambiente, ou
-  - Local backend: `pulumi login --local` + `PULUMI_CONFIG_PASSPHRASE`.
+- Backend Pulumi local autenticado: `pulumi login --local`.
+- `PULUMI_CONFIG_PASSPHRASE` configurado na sessão.
 - Token da API Supabase configurado em ambiente (`SUPABASE_ACCESS_TOKEN`).
 - Organização Supabase disponível.
 
@@ -16,7 +15,8 @@ Infraestrutura para provisionar projeto Supabase com Pulumi.
 - `organizationId`
 - `projectName`
 - `region`
-- `databasePassword` (secret)
+- `existingProjectRef` (opcional, recomendado para adoção de projeto já existente)
+- `databasePassword` (secret, obrigatório apenas no modo de criação)
 
 ## Fluxo de provisionamento
 
@@ -38,20 +38,28 @@ pnpm install
 pulumi install
 ```
 
-4. Inicializar stack:
+4. Inicializar ou selecionar stack:
 
 ```bash
+pulumi stack select dev
+# se não existir:
 pulumi stack init dev
 ```
 
 5. Configurar parâmetros:
 
 ```bash
-pulumi config set organizationId <org-id>
-pulumi config set projectName brevly
-pulumi config set region us-east-1
-pulumi config set --secret databasePassword <strong-password>
+pulumi config set organizationId kfbynqebumqgqhaudibk
+pulumi config set projectName brevly-tech360
+pulumi config set region sa-east-1
+pulumi config set existingProjectRef pvbrmtzoyaugpwnqiajn
 ```
+
+> Se você não for adotar projeto existente (`existingProjectRef`), defina também:
+>
+> ```bash
+> pulumi config set --secret databasePassword <strong-password>
+> ```
 
 6. Validar plano:
 
@@ -69,6 +77,7 @@ pulumi up
 
 - `supabaseProjectRef`
 - `supabaseRegion`
+- `supabaseProjectMode`
 - `supabaseDbPooler`
 - `supabaseUrl`
 - `supabaseAnonKey` (secret)
