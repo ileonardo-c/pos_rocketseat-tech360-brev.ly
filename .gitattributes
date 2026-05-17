@@ -1,2 +1,1 @@
-server/infra/sdks/supabase/** text eol=lf
-server/infra/pnpm-lock.yaml text eol=lf
+infra/pulumi/aws/pnpm-lock.yaml text eol=lf

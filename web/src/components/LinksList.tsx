@@ -1,63 +1,150 @@
-import type { LinkItem } from "../features/links/api";
+import {
+  CheckIcon,
+  CopyIcon,
+  DownloadSimpleIcon,
+  LinkIcon,
+  SpinnerIcon,
+  TrashIcon,
+} from "@phosphor-icons/react";
+import { useMemo, useState } from "react";
+import type { Link } from "@/repositories/links.repository";
 
 interface LinksListProps {
-  items: LinkItem[];
+  items: Link[];
   isLoading: boolean;
   isDeleting: boolean;
   deletingSlug: string | null;
+  hasLinks: boolean;
+  isExporting: boolean;
+  exportErrorMessage?: string;
   onDelete: (slug: string) => Promise<void>;
+  onExport: () => Promise<void>;
 }
 
-export function LinksList({ items, isLoading, isDeleting, deletingSlug, onDelete }: LinksListProps) {
-  if (isLoading) {
-    return (
-      <section className="card">
-        <h2 className="card-title">Meus Links</h2>
-        <p className="muted">Carregando links...</p>
-      </section>
-    );
-  }
+function formatShortUrl(slug: string): string {
+  const shortBase = import.meta.env.VITE_SHORT_BASE_URL ?? "brev.ly";
+  return `${shortBase}/${slug}`;
+}
 
-  if (items.length === 0) {
-    return (
-      <section className="card">
-        <h2 className="card-title">Meus Links</h2>
-        <p className="muted">Você ainda não cadastrou nenhum link.</p>
-      </section>
-    );
+function truncateUrl(url: string): string {
+  return url.replace(/^https?:\/\//i, "");
+}
+
+export function LinksList({
+  items,
+  isLoading,
+  isDeleting,
+  deletingSlug,
+  hasLinks,
+  isExporting,
+  exportErrorMessage,
+  onDelete,
+  onExport,
+}: LinksListProps) {
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const showEmpty = useMemo(() => !isLoading && items.length === 0, [isLoading, items.length]);
+
+  async function handleCopy(slug: string) {
+    const shortUrl = `${window.location.origin}/${slug}`;
+    await navigator.clipboard.writeText(shortUrl);
+    setCopiedSlug(slug);
+
+    window.setTimeout(() => {
+      setCopiedSlug((current) => (current === slug ? null : current));
+    }, 1500);
   }
 
   return (
-    <section className="card">
-      <h2 className="card-title">Meus Links</h2>
+    <section className="panel links-panel">
+      <header className="links-header">
+        <h2 className="panel-title">Meus links</h2>
+        <button
+          type="button"
+          className="secondary-btn"
+          disabled={!hasLinks || isExporting}
+          onClick={onExport}
+        >
+          {isExporting ? (
+            <SpinnerIcon size={18} className="spin" />
+          ) : (
+            <DownloadSimpleIcon size={18} />
+          )}
+          <span>{isExporting ? "Gerando..." : "Baixar CSV"}</span>
+        </button>
+      </header>
 
-      <ul className="link-list">
-        {items.map((item) => (
-          <li key={item.id} className="link-item">
-            <div>
-              <strong>{item.slug}</strong>
-              <p>{item.originalUrl}</p>
-            </div>
-            <div className="link-actions">
-              <span>{item.accessCount} acessos</span>
-              <button
-                type="button"
-                onClick={() => navigator.clipboard.writeText(`${window.location.origin}/${item.slug}`)}
-              >
-                Copiar
-              </button>
-              <button
-                type="button"
-                className="danger"
-                onClick={() => onDelete(item.slug)}
-                disabled={isDeleting && deletingSlug === item.slug}
-              >
-                {isDeleting && deletingSlug === item.slug ? "Removendo..." : "Excluir"}
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {exportErrorMessage && <p className="form-error links-export-error">{exportErrorMessage}</p>}
+
+      <div className="links-content">
+        {isLoading && (
+          <div className="links-loading">
+            <SpinnerIcon size={24} className="spin" />
+            <p>Carregando links...</p>
+          </div>
+        )}
+
+        {showEmpty && (
+          <div className="links-empty">
+            <LinkIcon size={36} />
+            <p>Ainda não existem links cadastrados</p>
+          </div>
+        )}
+
+        {!isLoading && items.length > 0 && (
+          <ul className="link-list">
+            {items.map((item) => {
+              const isItemDeleting = isDeleting && deletingSlug === item.slug;
+              const isCopied = copiedSlug === item.slug;
+
+              return (
+                <li key={item.id} className="link-item">
+                  <div className="link-item-main">
+                    <a
+                      className="link-short-url"
+                      href={`/${item.slug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {formatShortUrl(item.slug)}
+                    </a>
+                    <p className="link-original-url" title={item.originalUrl}>
+                      {truncateUrl(item.originalUrl)}
+                    </p>
+                  </div>
+
+                  <div className="link-item-actions">
+                    <span className="link-access-count">{item.accessCount} acessos</span>
+                    <div className="link-action-buttons">
+                      <button
+                        type="button"
+                        className="icon-btn"
+                        onClick={() => handleCopy(item.slug)}
+                        aria-label="Copiar link"
+                      >
+                        {isCopied ? <CheckIcon size={18} weight="bold" /> : <CopyIcon size={18} />}
+                      </button>
+
+                      <button
+                        type="button"
+                        className="icon-btn"
+                        onClick={() => onDelete(item.slug)}
+                        disabled={isItemDeleting}
+                        aria-label="Excluir link"
+                      >
+                        {isItemDeleting ? (
+                          <SpinnerIcon size={18} className="spin" />
+                        ) : (
+                          <TrashIcon size={18} />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

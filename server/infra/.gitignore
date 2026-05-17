@@ -1,7 +1,0 @@
-node_modules/
-bin/
-.pulumi/
-sdks/**/node_modules/
-sdks/**/bin/
-Pulumi.*.yaml
-!Pulumi.dev.example.yaml

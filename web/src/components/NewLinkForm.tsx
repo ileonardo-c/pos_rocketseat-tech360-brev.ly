@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SpinnerIcon, WarningIcon } from "@phosphor-icons/react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -19,6 +20,8 @@ interface NewLinkFormProps {
 }
 
 export function NewLinkForm({ onCreate, isSubmitting, errorMessage }: NewLinkFormProps) {
+  const shortBase = import.meta.env.VITE_SHORT_BASE_URL ?? "brev.ly";
+
   const {
     register,
     handleSubmit,
@@ -39,34 +42,51 @@ export function NewLinkForm({ onCreate, isSubmitting, errorMessage }: NewLinkFor
   }
 
   return (
-    <section className="card">
-      <h2 className="card-title">Novo Link</h2>
+    <section className="panel">
+      <h2 className="panel-title">Novo link</h2>
 
-      <form className="form-stack" onSubmit={handleSubmit(onSubmit)}>
-        <label className="field">
-          <span>URL original</span>
+      <form className="new-link-form" onSubmit={handleSubmit(onSubmit)}>
+        <label className={`input-group${errors.originalUrl ? " has-error" : ""}`}>
+          <span className="input-label">LINK ORIGINAL</span>
           <input
             type="url"
-            placeholder="https://www.exemplo.com"
+            placeholder="www.exemplo.com.br"
             {...register("originalUrl")}
             disabled={isSubmitting}
           />
-          {errors.originalUrl && <small>{errors.originalUrl.message}</small>}
+          {errors.originalUrl && (
+            <small>
+              <WarningIcon size={14} />
+              {errors.originalUrl.message}
+            </small>
+          )}
         </label>
 
-        <label className="field">
-          <span>URL encurtada</span>
-          <div className="prefix-input">
-            <span>{import.meta.env.VITE_SHORT_BASE_URL ?? "brev.ly"}/</span>
-            <input type="text" placeholder="meu-link" {...register("slug")} disabled={isSubmitting} />
+        <label className={`input-group${errors.slug ? " has-error" : ""}`}>
+          <span className="input-label">LINK ENCURTADO</span>
+          <div className="slug-input">
+            <span>{shortBase}/</span>
+            <input type="text" placeholder="" {...register("slug")} disabled={isSubmitting} />
           </div>
-          {errors.slug && <small>{errors.slug.message}</small>}
+          {errors.slug && (
+            <small>
+              <WarningIcon size={14} />
+              {errors.slug.message}
+            </small>
+          )}
         </label>
 
         {errorMessage && <p className="form-error">{errorMessage}</p>}
 
-        <button type="submit" disabled={!isValid || isSubmitting}>
-          {isSubmitting ? "Salvando..." : "Salvar link"}
+        <button className="primary-btn" type="submit" disabled={!isValid || isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <SpinnerIcon size={18} className="spin" />
+              Salvando...
+            </>
+          ) : (
+            "Salvar link"
+          )}
         </button>
       </form>
     </section>

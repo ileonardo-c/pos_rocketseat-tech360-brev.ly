@@ -14,9 +14,6 @@ dist/
 .local/
 *.tmp
 *.local
-server/infra/node_modules/
-server/infra/.pulumi/
-server/infra/bin/
 skills-lock.json
-playwright-report/
-test-results/
+web/playwright-report/
+web/test-results/

@@ -1,66 +1,47 @@
 # Server
 
-API de encurtamento de links com TypeScript, Fastify, Drizzle e Postgres (Supabase).
+API de encurtamento com Fastify + Drizzle + Postgres.
 
 ## Arquitetura
 
-- `src/domain`: entidades e regras básicas.
-- `src/application/use-cases`: composables de casos de uso.
-- `src/application/repositories`: contratos (Repository Pattern).
-- `src/infra`: banco, storage, HTTP e implementações concretas.
+- `src/lib`: env, db e storage
+- `src/models`: acesso a dados
+- `src/services`: regras de negócio
+- `src/controllers`: adaptação HTTP
+- `src/routes`: rotas Fastify
+- `src/http`: bootstrap da aplicação
 
 ## Endpoints
 
 - `GET /health`
 - `POST /urls`
-- `DELETE /urls/:shortUrl`
-- `GET /urls/:shortUrl`
 - `GET /urls`
+- `GET /urls/:shortUrl`
+- `DELETE /urls/:shortUrl`
 - `POST /urls/:shortUrl/increment`
 - `GET /urls/report`
 
-## Variáveis de ambiente
+## Contrato de erro
 
-Runtime da API (`server/.env`):
+- `400`: `{ message, field? }`
+- `404`: `{ message }`
+- `409`: `{ message, field? }`
+- `500`: `{ message }`
 
-- `NODE_ENV`
-- `PORT`
-- `CORS_ORIGIN`
-- `DATABASE_URL`
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `SUPABASE_STORAGE_BUCKET`
-- `FILE_STORAGE_DRIVER` (`supabase` ou `memory`)
-- `REPORT_SIGNED_URL_EXPIRES_IN_SECONDS`
+## Execução
 
-## Execução local
+Use o passo a passo principal no README raiz.
 
-1. Copiar `.env.example` para `.env`.
-2. Instalar dependências:
+Configurar env:
 
 ```bash
-pnpm install
+cp server/.env.example server/.env
 ```
 
-3. Aplicar migrations:
+Comandos isolados do pacote:
 
 ```bash
-pnpm db:migrate
+pnpm --dir server run db:migrate
+pnpm --dir server run dev
+pnpm --dir server run test
 ```
-
-4. Subir API:
-
-```bash
-pnpm dev
-```
-
-## Pulumi + Supabase
-
-A infraestrutura está em `server/infra`.
-
-Fluxo:
-
-1. Provisionar projeto/outputs com Pulumi.
-2. Popular `.env` do runtime com outputs necessários.
-3. Executar migrations.
-4. Validar fluxos HTTP e export CSV.

@@ -3,22 +3,34 @@
   "private": true,
   "version": "1.0.0",
   "packageManager": "pnpm@11.1.2",
+  "engines": {
+    "node": "22.x"
+  },
+  "volta": {
+    "node": "22.22.2",
+    "pnpm": "11.1.2"
+  },
   "scripts": {
     "init": "pnpm install",
     "dev": "pnpm -r --parallel dev",
     "dev:docker": "docker compose up --build",
     "down:docker": "docker compose down",
     "logs:docker": "docker compose logs -f",
+    "biome:check": "biome check --files-ignore-unknown=true server/src web/src",
+    "biome:format": "biome format --files-ignore-unknown=true --write server/src web/src",
     "typecheck": "pnpm -r typecheck",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
-    "e2e": "playwright test",
-    "e2e:ui": "playwright test --ui",
-    "e2e:install": "playwright install",
+    "e2e": "pnpm --filter web run e2e",
+    "e2e:ui": "pnpm --filter web run e2e:ui",
+    "e2e:install": "pnpm --filter web run e2e:install",
+    "e2e:proof": "pnpm --filter web run e2e:proof",
     "format": "pnpm -r format"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.1"
+    "@biomejs/biome": "^2.4.15",
+    "@types/node": "^24.12.4",
+    "typescript": "^5.9.3"
   }
 }

@@ -1,35 +1,79 @@
-import axios from "axios";
 import { useMemo, useState } from "react";
-import { LinksList } from "../components/LinksList";
-import { NewLinkForm, type NewLinkFormValues } from "../components/NewLinkForm";
-import {
-  useCreateLinkMutation,
-  useDeleteLinkMutation,
-  useExportLinksCsvMutation,
-  useLinksQuery,
-} from "../features/links/hooks";
+import { LinksList } from "@/components/LinksList";
+import { NewLinkForm, type NewLinkFormValues } from "@/components/NewLinkForm";
+import { useCreateLink, useDeleteLink, useExportLinksCsv, useListLinks } from "@/hooks";
+import type { AppError } from "@/lib/http";
+
+function getCreateErrorMessage(error: AppError | null): string | undefined {
+  if (!error) {
+    return undefined;
+  }
+
+  if (error.kind === "validation") {
+    if (error.field === "originalUrl") {
+      return "Informe uma URL valida.";
+    }
+
+    if (error.field === "slug") {
+      return "Use apenas letras, numeros, _ e -.";
+    }
+
+    return "Nao foi possivel validar os dados enviados.";
+  }
+
+  if (error.kind === "conflict" && error.field === "slug") {
+    return "Esse encurtamento ja existe.";
+  }
+
+  if (error.kind === "network") {
+    return "Sem conexao. Tente novamente.";
+  }
+
+  if (error.kind === "server") {
+    return "Erro interno. Tente novamente.";
+  }
+
+  return error.message || "Nao foi possivel criar o link.";
+}
+
+function getExportErrorMessage(error: AppError | null): string | undefined {
+  if (!error) {
+    return undefined;
+  }
+
+  if (error.kind === "network") {
+    return "Sem conexao. Tente novamente.";
+  }
+
+  if (error.kind === "server") {
+    return "Falha ao exportar relatorio.";
+  }
+
+  return error.message || "Nao foi possivel gerar o relatorio CSV.";
+}
 
 export function HomePage() {
-  const { data: links = [], isLoading } = useLinksQuery();
-  const createMutation = useCreateLinkMutation();
-  const deleteMutation = useDeleteLinkMutation();
-  const exportMutation = useExportLinksCsvMutation();
-  const [createError, setCreateError] = useState<string | undefined>();
+  const { data: links = [], isLoading } = useListLinks();
+  const createLink = useCreateLink();
+  const deleteLink = useDeleteLink();
+  const exportLinksCsv = useExportLinksCsv();
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
 
   const hasLinks = useMemo(() => links.length > 0, [links.length]);
+  const createErrorMessage = useMemo(
+    () => getCreateErrorMessage(createLink.error ?? null),
+    [createLink.error],
+  );
+  const exportErrorMessage = useMemo(
+    () => getExportErrorMessage(exportLinksCsv.error ?? null),
+    [exportLinksCsv.error],
+  );
 
   async function handleCreate(values: NewLinkFormValues) {
-    setCreateError(undefined);
     try {
-      await createMutation.mutateAsync(values);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const serverMessage = error.response?.data?.message;
-        setCreateError(serverMessage ?? "Não foi possível criar o link.");
-        return;
-      }
-      setCreateError("Erro inesperado ao criar link.");
+      await createLink.mutateAsync(values);
+    } catch {
+      // Error is exposed by createLink.error for UI mapping.
     }
   }
 
@@ -40,45 +84,42 @@ export function HomePage() {
 
     setDeletingSlug(slug);
     try {
-      await deleteMutation.mutateAsync(slug);
+      await deleteLink.mutateAsync({ slug });
     } finally {
       setDeletingSlug(null);
     }
   }
 
   async function handleExport() {
-    const report = await exportMutation.mutateAsync();
-    window.open(report.reportUrl, "_blank", "noopener,noreferrer");
+    try {
+      const report = await exportLinksCsv.mutateAsync();
+      window.open(report.reportUrl, "_blank", "noopener,noreferrer");
+    } catch {
+      // Error is exposed by exportLinksCsv.error for UI mapping.
+    }
   }
 
   return (
-    <main className="page">
-      <header className="header">
-        <h1>Brevly</h1>
-        <p>Gerencie links encurtados com performance e simplicidade.</p>
-      </header>
-
-      <section className="grid">
-        <NewLinkForm
-          onCreate={handleCreate}
-          isSubmitting={createMutation.isPending}
-          errorMessage={createError}
-        />
-
-        <div className="actions-wrapper">
-          <div className="card card-header">
-            <h2 className="card-title">Relatório</h2>
-            <button type="button" disabled={!hasLinks || exportMutation.isPending} onClick={handleExport}>
-              {exportMutation.isPending ? "Gerando..." : "Baixar CSV"}
-            </button>
-          </div>
+    <main className="home-page">
+      <section className="home-shell">
+        <img src="/logo.svg" alt="brev.ly" className="home-logo" />
+        <div className="home-grid">
+          <NewLinkForm
+            onCreate={handleCreate}
+            isSubmitting={createLink.isPending}
+            errorMessage={createErrorMessage}
+          />
 
           <LinksList
             items={links}
             isLoading={isLoading}
             onDelete={handleDelete}
-            isDeleting={deleteMutation.isPending}
+            isDeleting={deleteLink.isPending}
             deletingSlug={deletingSlug}
+            onExport={handleExport}
+            isExporting={exportLinksCsv.isPending}
+            hasLinks={hasLinks}
+            exportErrorMessage={exportErrorMessage}
           />
         </div>
       </section>
