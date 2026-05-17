@@ -1,6 +1,6 @@
 # Brevly Monorepo
 
-Projeto fullstack para encurtamento de links, com foco em simplicidade, organização e deploy com Supabase + Pulumi.
+Projeto fullstack para encurtamento de links com foco em simplicidade, organização e entrega orientada ao desafio.
 
 ## Estrutura
 
@@ -8,45 +8,62 @@ Projeto fullstack para encurtamento de links, com foco em simplicidade, organiza
 - `web`: SPA React + Vite.
 - `.github`: CI, template de PR e automações de governança.
 
-## Como iniciar (`/init`)
+## Setup
 
 ```bash
 pnpm run init
 ```
 
-O script `init` instala dependências do monorepo.
-
-## Desenvolvimento
+## Desenvolvimento local
 
 ```bash
 pnpm dev
 ```
 
-## Build e testes
+## Qualidade
 
 ```bash
-pnpm build
-pnpm test
+pnpm run typecheck
+pnpm run lint
+pnpm run test
+pnpm run build
 ```
 
-## Arquitetura (server)
+## Docker full-stack (local)
 
-- Composables como Use Cases.
-- Repository Pattern.
-- Infra desacoplada para banco, HTTP e storage.
+```bash
+pnpm run dev:docker
+```
 
-## Governança de Repositório
+Serviços esperados:
 
-- CI obrigatório em PR/push com checks estáveis: `lint`, `test`, `build`.
-- `CODEOWNERS` configurado para revisão do owner.
-- Template de PR e guia de contribuição ativos.
-- Política de revisão automática do Codex descrita em `AGENTS.md`.
+- API: `http://localhost:3333`
+- Health API: `http://localhost:3333/health`
+- Web: `http://localhost:5173`
+- Postgres: `localhost:5432`
 
-## Publicação GitHub
+Parar stack:
 
-Siga o runbook em `.github/REPOSITORY_SETUP.md` para:
+```bash
+pnpm run down:docker
+```
 
-- criar o repositório `pos_rocketseat-tech360-brev.ly` (privado);
-- aplicar políticas de merge/branch protection;
-- habilitar auto-review do Codex no repositório;
-- publicar e abrir PR de validação inicial.
+## Smoke E2E (Playwright)
+
+Pré-requisito: stack local ativa.
+
+```bash
+pnpm run e2e:install
+pnpm run e2e
+```
+
+## Governança de repositório
+
+- CI obrigatório com checks estáveis: `server`, `web`.
+- `CODEOWNERS` ativo.
+- Template de PR com checklist obrigatório do desafio.
+- Política de review do Codex em `AGENTS.md`.
+
+## Supabase + Pulumi
+
+Fluxo operacional em `server/infra/README.md`.

@@ -40,3 +40,11 @@
 7. `feat(web-links): fluxos completos de links e relatório CSV`
 8. `test: cobertura backend/frontend e ajustes finais de aceite`
 9. `docs: setup, envs, execução local e deploy`
+
+## Evidências de validação (publicação por etapas)
+
+- [ ] Gate CI remoto aprovado (`server`, `web`).
+- [ ] Gate local Docker aprovado (`postgres`, `server`, `web` saudáveis).
+- [ ] `GET /health` retornando `200`.
+- [ ] Gate Playwright smoke aprovado.
+- [ ] Gate Supabase/Pulumi aprovado (projeto, outputs, migrations, CSV assinado).
