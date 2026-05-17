@@ -1,0 +1,6 @@
+name: brevly-supabase
+runtime:
+  name: nodejs
+  options:
+    typescript: true
+description: Supabase project infrastructure for Brevly

@@ -1,0 +1,14 @@
+{
+  "name": "brevly-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@11.1.2",
+  "scripts": {
+    "init": "pnpm install",
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format"
+  }
+}

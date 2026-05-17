@@ -1,0 +1,17 @@
+{
+  "name": "server-infra",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "prepare:supabase-sdk": "pulumi package add terraform-provider supabase/supabase",
+    "build": "tsc -p tsconfig.json",
+    "preview": "pulumi preview",
+    "up": "pulumi up"
+  },
+  "dependencies": {
+    "@pulumi/pulumi": "^3.204.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
