@@ -10,3 +10,5 @@ CREATE TABLE IF NOT EXISTS "links" (
 
 CREATE INDEX IF NOT EXISTS "links_slug_idx" ON "links" ("slug");
 CREATE INDEX IF NOT EXISTS "links_created_at_idx" ON "links" ("created_at");
+
+ALTER TABLE "links" ENABLE ROW LEVEL SECURITY;
