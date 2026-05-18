@@ -16,4 +16,5 @@ dist/
 *.local
 skills-lock.json
 web/playwright-report/
+playwright-report/
 web/test-results/

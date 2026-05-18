@@ -8,7 +8,7 @@ export default defineConfig({
   outputDir: "test-results",
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
-  reporter: [["list"], ["html", { open: "never", outputFolder: "playwright-report" }]],
+  reporter: [["list"], ["html", { open: "never", outputFolder: "../playwright-report" }]],
   expect: {
     toHaveScreenshot: {
       animations: "disabled",
