@@ -55,13 +55,21 @@ pnpm run e2e
 pnpm run e2e:proof
 ```
 
-6. Validar artefatos:
+6. Abrir relatório HTML do último run:
+
+```bash
+pnpm run e2e:report
+# ou
+pnpm exec playwright show-report web/playwright-report
+```
+
+7. Validar artefatos:
 
 - `web/playwright-report`
 - `web/test-results/evidence`
 - `web/test-results`
 
-7. Encerrar stack local:
+8. Encerrar stack local:
 
 ```bash
 pnpm run down:docker
