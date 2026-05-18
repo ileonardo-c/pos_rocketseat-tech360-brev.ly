@@ -60,12 +60,12 @@ pnpm run e2e:proof
 ```bash
 pnpm run e2e:report
 # ou
-pnpm exec playwright show-report web/playwright-report
+pnpm exec playwright show-report
 ```
 
 7. Validar artefatos:
 
-- `web/playwright-report`
+- `playwright-report`
 - `web/test-results/evidence`
 - `web/test-results`
 
