@@ -27,6 +27,8 @@
     "e2e:install": "pnpm --filter web run e2e:install",
     "e2e:report": "pnpm --filter web run e2e:report",
     "e2e:proof": "pnpm --filter web run e2e:proof",
+    "e2e:demo-video": "node scripts/e2e-demo-video.mjs",
+    "video": "node scripts/e2e-demo-video.mjs",
     "format": "pnpm -r format"
   },
   "devDependencies": {

@@ -55,7 +55,17 @@ pnpm run e2e
 pnpm run e2e:proof
 ```
 
-6. Abrir relatório HTML do último run:
+6. Gerar vídeo de demonstração do checklist completo:
+
+```bash
+pnpm run e2e:demo-video
+# ou
+pnpm run video
+```
+
+O vídeo de evidência é gerado em `brevly-demo.webm` com legendas dinâmicas e interações humanizadas.
+
+7. Abrir relatório HTML do último run:
 
 ```bash
 pnpm run e2e:report
@@ -63,13 +73,14 @@ pnpm run e2e:report
 pnpm exec playwright show-report
 ```
 
-7. Validar artefatos:
+8. Validar artefatos:
 
 - `playwright-report`
 - `web/test-results/evidence`
 - `web/test-results`
+- `brevly-demo.webm`
 
-8. Encerrar stack local:
+9. Encerrar stack local:
 
 ```bash
 pnpm run down:docker
@@ -101,12 +112,14 @@ pnpm --dir web run dev
 ```bash
 pnpm run e2e
 pnpm run e2e:proof
+pnpm run e2e:demo-video
 ```
 
 ## Diferença entre comandos E2E
 
 - `pnpm run e2e`: smoke funcional principal.
 - `pnpm run e2e:proof`: smoke funcional + capturas de evidência.
+- `pnpm run e2e:demo-video`: jornada completa com legendas e gravação de vídeo de evidência (`brevly-demo.webm`).
 - `pnpm --filter web run e2e:visual`: comparação visual com baseline do Figma.
 
 ## Qualidade do projeto
