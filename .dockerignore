@@ -12,6 +12,8 @@ playwright-report
 test-results
 web/playwright-report
 web/test-results
+*.webm
+brevly-demo.webm
 .env
 .env.*
 *.log

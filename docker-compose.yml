@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-brevly}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5434}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -19,7 +19,7 @@ services:
       retries: 20
 
   minio:
-    image: minio/minio:latest
+    image: ghcr.io/coollabsio/minio@sha256:4f75fd76598afa23919555d1363e1fb13c632d9bcd4ce8edcf21d3cca2ed0579
     container_name: brevly-minio
     command: server /data --console-address ":9001"
     environment:
@@ -33,13 +33,13 @@ services:
     networks:
       - brevly-local
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/minio/health/live"]
-      interval: 10s
+      test: ["CMD", "/usr/bin/mc", "ready", "local"]
+      interval: 5s
       timeout: 5s
       retries: 20
 
   minio-init:
-    image: minio/mc:latest
+    image: ghcr.io/coollabsio/minio@sha256:4f75fd76598afa23919555d1363e1fb13c632d9bcd4ce8edcf21d3cca2ed0579
     container_name: brevly-minio-init
     depends_on:
       minio:
@@ -48,7 +48,7 @@ services:
       [
         "/bin/sh",
         "-c",
-        "until mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin}; do sleep 1; done && mc mb --ignore-existing local/${AWS_S3_BUCKET:-brevly-reports}",
+        "until /usr/bin/mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin}; do sleep 1; done && /usr/bin/mc mb --ignore-existing local/${AWS_S3_BUCKET:-brevly-reports}",
       ]
     environment:
       MC_HOST_local: http://${MINIO_ROOT_USER:-minioadmin}:${MINIO_ROOT_PASSWORD:-minioadmin}@minio:9000

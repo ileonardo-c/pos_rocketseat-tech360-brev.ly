@@ -39,3 +39,4 @@
 - [x] `GET /health = 200`
 - [x] `pnpm run e2e`
 - [x] `pnpm run e2e:proof`
+- [x] `pnpm run e2e:demo-video` (vídeo de demonstração do checklist completo)
